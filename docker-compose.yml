@@ -1,0 +1,165 @@
+version: '3.8'
+
+services:
+  # ======================== PostgreSQL ========================
+  postgres-auth:
+    image: postgres:15
+    container_name: postgres-auth
+    environment:
+      POSTGRES_DB: auth_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5433:5432"
+    networks:
+      - microservices-net
+
+  postgres-orders:
+    image: postgres:15
+    container_name: postgres-orders
+    environment:
+      POSTGRES_DB: orders_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5434:5432"
+    networks:
+      - microservices-net
+
+  postgres-products:
+    image: postgres:15
+    container_name: postgres-products
+    environment:
+      POSTGRES_DB: products_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5435:5432"
+    networks:
+      - microservices-net
+
+  postgres-shipping:
+    image: postgres:15
+    container_name: postgres-shipping
+    environment:
+      POSTGRES_DB: shipping_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5436:5432"
+    networks:
+      - microservices-net
+
+  postgres-warehouse:
+    image: postgres:15
+    container_name: postgres-warehouse
+    environment:
+      POSTGRES_DB: warehouse_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5437:5432"
+    networks:
+      - microservices-net
+
+  # ======================== MongoDB (NoSQL) ========================
+  mongo-analytics:
+    image: mongo:6
+    container_name: mongo-analytics
+    environment:
+      MONGO_INITDB_DATABASE: analytics_db
+    ports:
+      - "27017:27017"
+    networks:
+      - microservices-net
+
+  # ======================== Mikroserwisy ========================
+  auth-service:
+    build: ./auth-service
+    container_name: auth-service
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-auth:5432/auth_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+    depends_on:
+      - postgres-auth
+    networks:
+      - microservices-net
+
+  orders-service:
+    build: ./orders-service
+    container_name: orders-service
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-orders:5432/orders_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+    depends_on:
+      - postgres-orders
+    networks:
+      - microservices-net
+
+  products-service:
+    build: ./products-service
+    container_name: products-service
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-products:5432/products_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+    depends_on:
+      - postgres-products
+    networks:
+      - microservices-net
+
+  shipping-service:
+    build: ./shipping-service
+    container_name: shipping-service
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-shipping:5432/shipping_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+    depends_on:
+      - postgres-shipping
+    networks:
+      - microservices-net
+
+  warehouse-service:
+    build: ./warehouse-service
+    container_name: warehouse-service
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-warehouse:5432/warehouse_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+    depends_on:
+      - postgres-warehouse
+    networks:
+      - microservices-net
+
+  analytics-service:
+    build: ./analytics-service
+    container_name: analytics-service
+    environment:
+      SPRING_DATA_MONGODB_URI: mongodb://mongo-analytics:27017/analytics_db
+    depends_on:
+      - mongo-analytics
+    networks:
+      - microservices-net
+
+  # ======================== API Gateway ========================
+  gateway:
+    build: ./gateway
+    container_name: gateway
+    ports:
+      - "8080:8080"
+    depends_on:
+      - auth-service
+      - orders-service
+      - products-service
+      - shipping-service
+      - warehouse-service
+      - analytics-service
+    networks:
+      - microservices-net
+
+networks:
+  microservices-net:
+    driver: bridge
