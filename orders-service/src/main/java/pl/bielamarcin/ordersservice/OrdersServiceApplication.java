@@ -1,13 +1,13 @@
-package pl.bielamarcin.orderservice;
+package pl.bielamarcin.ordersservice;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class OrderServiceApplication {
+public class OrdersServiceApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(OrderServiceApplication.class, args);
+        SpringApplication.run(OrdersServiceApplication.class, args);
     }
 
 }

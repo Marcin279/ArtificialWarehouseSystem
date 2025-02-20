@@ -1,10 +1,10 @@
-package pl.bielamarcin.orderservice;
+package pl.bielamarcin.ordersservice;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class OrderServiceApplicationTests {
+class OrdersServiceApplicationTests {
 
     @Test
     void contextLoads() {
