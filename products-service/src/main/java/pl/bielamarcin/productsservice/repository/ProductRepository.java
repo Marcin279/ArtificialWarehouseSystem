@@ -1,0 +1,13 @@
+package pl.bielamarcin.productsservice.repository;
+
+import pl.bielamarcin.productsservice.model.Product;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
+
+@Repository
+public interface ProductRepository extends JpaRepository<Product, Long> {
+    Optional<Product> findByName(String name);
+
+}

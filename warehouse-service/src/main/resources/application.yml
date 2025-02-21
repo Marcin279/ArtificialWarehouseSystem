@@ -5,7 +5,7 @@ spring:
   application:
     name: warehouse-service
   datasource:
-    url: jdbc:postgresql://postgres-db:5432/warehouse_db
+    url: jdbc:postgresql://postgres-warehouse:5432/warehouse_db
     username: postgres
     password: postgres
     driver-class-name: org.postgresql.Driver
@@ -16,11 +16,6 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
-
-#eureka:
-#  client:
-#    service-url:
-#      defaultZone: http://eureka-server:8761/eureka/
 
 management:
   endpoints:

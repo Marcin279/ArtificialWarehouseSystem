@@ -5,7 +5,7 @@ spring:
   application:
     name: shipping-service
   datasource:
-    url: jdbc:postgresql://postgres-db:5432/shipping_db
+    url: jdbc:postgresql://postgres-shipping:5432/shipping_db
     username: postgres
     password: postgres
     driver-class-name: org.postgresql.Driver
@@ -16,11 +16,6 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
-
-#eureka:
-#  client:
-#    service-url:
-#      defaultZone: http://eureka-server:8761/eureka/
 
 management:
   endpoints:

@@ -5,7 +5,7 @@ spring:
   application:
     name: products-service
   datasource:
-    url: jdbc:postgresql://postgres-db:5432/products_db
+    url: jdbc:postgresql://postgres-products:5432/products_db
     username: postgres
     password: postgres
     driver-class-name: org.postgresql.Driver
