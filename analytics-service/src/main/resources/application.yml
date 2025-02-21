@@ -6,7 +6,7 @@ spring:
     name: analytics-service
   data:
     mongodb:
-      host: localhost
+      host: mongo-analytics
       port: 27017
       database: analytics_db
   jpa:
