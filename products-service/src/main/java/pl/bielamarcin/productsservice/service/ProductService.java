@@ -8,6 +8,7 @@ import pl.bielamarcin.productsservice.model.Product;
 import pl.bielamarcin.productsservice.exception.ProductNotFoundException;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class ProductService {
@@ -24,7 +25,7 @@ public class ProductService {
         return productRepository.findAll().stream().map(productMapper::toDTO).toList();
     }
 
-    public ProductDTO getProductById(Long id) throws ProductNotFoundException{
+    public ProductDTO getProductById(UUID id) throws ProductNotFoundException{
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new ProductNotFoundException("Product not found"));
         return productMapper.toDTO(product);
@@ -44,7 +45,7 @@ public class ProductService {
                 .toList();
     }
 
-    public ProductDTO updateProduct(Long id, ProductDTO updatedProductDTO) throws ProductNotFoundException {
+    public ProductDTO updateProduct(UUID id, ProductDTO updatedProductDTO) throws ProductNotFoundException {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new ProductNotFoundException("Product not found"));
         product.setName(updatedProductDTO.name());
@@ -55,7 +56,7 @@ public class ProductService {
         return productMapper.toDTO(productRepository.save(product));
     }
 
-    public void deleteProduct(Long id) throws ProductNotFoundException {
+    public void deleteProduct(UUID id) throws ProductNotFoundException {
         if (!productRepository.existsById(id)) {
             throw new ProductNotFoundException("Product not found");
         }

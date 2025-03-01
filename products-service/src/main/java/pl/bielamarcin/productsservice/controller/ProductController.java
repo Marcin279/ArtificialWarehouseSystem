@@ -9,6 +9,7 @@ import pl.bielamarcin.productsservice.dto.ProductDTO;
 import pl.bielamarcin.productsservice.exception.ProductNotFoundException;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/products")
@@ -26,7 +27,7 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProductDTO> getProductById(@PathVariable Long id) {
+    public ResponseEntity<ProductDTO> getProductById(@PathVariable UUID id) {
         try {
             return ResponseEntity.ok(productService.getProductById(id));
         } catch (ProductNotFoundException e) {
@@ -45,7 +46,7 @@ public class ProductController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProductDTO> updateProduct(@PathVariable Long id, @RequestBody ProductDTO product) {
+    public ResponseEntity<ProductDTO> updateProduct(@PathVariable UUID id, @RequestBody ProductDTO product) {
         try {
             return ResponseEntity.ok(productService.updateProduct(id, product));
         } catch (ProductNotFoundException e) {
@@ -54,7 +55,7 @@ public class ProductController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteProduct(@PathVariable UUID id) {
         try {
             productService.deleteProduct(id);
             return ResponseEntity.noContent().build();
