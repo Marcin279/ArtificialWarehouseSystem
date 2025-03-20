@@ -26,7 +26,7 @@ public class ProductService {
     }
 
     public ProductDTO getProductById(UUID id) throws ProductNotFoundException{
-        Product product = productRepository.findById(id)
+        Product product = productRepository.getProductById(id)
                 .orElseThrow(() -> new ProductNotFoundException("Product not found"));
         return productMapper.toDTO(product);
     }
@@ -35,6 +35,7 @@ public class ProductService {
         Product product = productRepository.save(productMapper.toEntity(productDTO));
         return productMapper.toDTO(product);
     }
+
     public List<ProductDTO> addAllProducts(List<ProductDTO> productDTOs) {
         List<Product> products = productDTOs.stream()
                 .map(productMapper::toEntity)

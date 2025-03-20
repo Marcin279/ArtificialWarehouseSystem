@@ -28,6 +28,7 @@ public class ProductController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ProductDTO> getProductById(@PathVariable UUID id) {
+        System.out.println("id = " + id);
         try {
             return ResponseEntity.ok(productService.getProductById(id));
         } catch (ProductNotFoundException e) {
