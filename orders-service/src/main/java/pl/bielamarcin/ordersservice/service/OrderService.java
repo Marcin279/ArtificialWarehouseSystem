@@ -11,7 +11,9 @@ import pl.bielamarcin.ordersservice.model.Order;
 import pl.bielamarcin.ordersservice.model.OrderItem;
 import pl.bielamarcin.ordersservice.repository.OrderItemRepository;
 import pl.bielamarcin.ordersservice.repository.OrderRepository;
+import pl.bielamarcin.ordersservice.service.ProductServiceClient;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -54,15 +56,15 @@ public class OrderService {
 
         final Order finalOrder = order;
         List<OrderItem> orderItems = orderDTO.getOrderItems().stream().map(itemDTO -> {
-            System.out.println("itemDTO.getId() = " + itemDTO.getId());
             Optional<ProductDTO> productOptional = productServiceClient.getProductById(itemDTO.getId());
-            System.out.println("productOptional = " + productOptional);
-            OrderItem orderItem = new OrderItem();
             if (productOptional.isEmpty()) {
                 throw new IllegalArgumentException("Product not found");
             }
-            orderItem.setProductId(productOptional.get().getId());
-            orderItem.setPrice(productOptional.get().getPrice());
+            ProductDTO product = productOptional.get();
+            System.out.println("Fetched product: " + product); // Log the fetched product
+            OrderItem orderItem = new OrderItem();
+            orderItem.setProductId(product.getId());
+            orderItem.setPrice(product.getPrice());
             orderItem.setQuantity(itemDTO.getQuantity());
             orderItem.setOrder(finalOrder);
             return orderItem;
