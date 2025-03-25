@@ -49,11 +49,11 @@ public class ProductService {
     public ProductDTO updateProduct(UUID id, ProductDTO updatedProductDTO) throws ProductNotFoundException {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new ProductNotFoundException("Product not found"));
-        product.setName(updatedProductDTO.name());
-        product.setDescription(updatedProductDTO.description());
-        product.setPrice(updatedProductDTO.price());
-        product.setQuantity(updatedProductDTO.quantity());
-        product.setCategory(updatedProductDTO.category());
+        product.setName(updatedProductDTO.getName());
+        product.setDescription(updatedProductDTO.getDescription());
+        product.setPrice(updatedProductDTO.getPrice());
+        product.setQuantity(updatedProductDTO.getQuantity());
+        product.setCategory(updatedProductDTO.getCategory());
         return productMapper.toDTO(productRepository.save(product));
     }
 

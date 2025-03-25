@@ -22,10 +22,11 @@ public class ProductServiceClient {
     public Optional<ProductDTO> getProductById(UUID productId) {
         try {
             logger.info("Fetching product with ID: " + productId);
-            ProductDTO product = restTemplate.getForObject("http://products-service:8081/api/products/" + productId, ProductDTO.class);
-            assert product != null;
-            logger.info("Fetched product: " + product.getId());
-            return Optional.of(product);
+            String url = "http://products-service:8081/api/products/" + productId;
+            logger.info("Request URL: " + url);
+            ProductDTO product = restTemplate.getForObject(url, ProductDTO.class);
+            logger.info("Fetched product: " + product);
+            return Optional.ofNullable(product);
         } catch (HttpClientErrorException e) {
             if (e.getStatusCode().is4xxClientError()) {
                 logger.warning("Product not found: " + productId);
