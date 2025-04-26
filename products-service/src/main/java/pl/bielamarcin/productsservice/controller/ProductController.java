@@ -1,12 +1,13 @@
 package pl.bielamarcin.productsservice.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.bielamarcin.productsservice.service.ProductService;
-import pl.bielamarcin.productsservice.dto.ProductDTO;
+import pl.bielamarcin.productsservice.dto.ProductReqDTO;
+import pl.bielamarcin.productsservice.dto.ProductRespDTO;
 import pl.bielamarcin.productsservice.exception.ProductNotFoundException;
+import pl.bielamarcin.productsservice.service.ProductService;
 
 import java.util.List;
 import java.util.UUID;
@@ -22,13 +23,12 @@ public class ProductController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<ProductDTO>> getAllProducts() {
+    public ResponseEntity<List<ProductRespDTO>> getAllProducts() {
         return ResponseEntity.ok(productService.getAllProducts());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProductDTO> getProductById(@PathVariable UUID id) {
-        System.out.println("id = " + id);
+    public ResponseEntity<ProductRespDTO> getProductById(@PathVariable UUID id) {
         try {
             return ResponseEntity.ok(productService.getProductById(id));
         } catch (ProductNotFoundException e) {
@@ -37,17 +37,18 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<ProductDTO> createProduct(@RequestBody ProductDTO productDTO) {
-        return ResponseEntity.ok(productService.addProduct(productDTO));
+    public ResponseEntity<ProductRespDTO> createProduct(@RequestBody ProductReqDTO productReqDTO) {
+        ProductRespDTO productRespDTO = productService.addProduct(productReqDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(productRespDTO);
     }
 
     @PostMapping("/all")
-    public ResponseEntity<List<ProductDTO>> createAllProducts(@RequestBody List<ProductDTO> productDTOs) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(productService.addAllProducts(productDTOs));
+    public ResponseEntity<List<ProductRespDTO>> createAllProducts(@RequestBody List<ProductReqDTO> productReqDTOS) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(productService.addAllProducts(productReqDTOS));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProductDTO> updateProduct(@PathVariable UUID id, @RequestBody ProductDTO product) {
+    public ResponseEntity<ProductRespDTO> updateProduct(@PathVariable UUID id, @RequestBody ProductReqDTO product) {
         try {
             return ResponseEntity.ok(productService.updateProduct(id, product));
         } catch (ProductNotFoundException e) {

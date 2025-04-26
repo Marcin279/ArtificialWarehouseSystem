@@ -1,7 +1,8 @@
 package pl.bielamarcin.productsservice.service;
 
 import org.springframework.stereotype.Service;
-import pl.bielamarcin.productsservice.dto.ProductDTO;
+import pl.bielamarcin.productsservice.dto.ProductReqDTO;
+import pl.bielamarcin.productsservice.dto.ProductRespDTO;
 import pl.bielamarcin.productsservice.mapper.ProductMapper;
 import pl.bielamarcin.productsservice.repository.ProductRepository;
 import pl.bielamarcin.productsservice.model.Product;
@@ -21,23 +22,23 @@ public class ProductService {
         this.productMapper = productMapper;
     }
 
-    public List<ProductDTO> getAllProducts() {
+    public List<ProductRespDTO> getAllProducts() {
         return productRepository.findAll().stream().map(productMapper::toDTO).toList();
     }
 
-    public ProductDTO getProductById(UUID id) throws ProductNotFoundException{
+    public ProductRespDTO getProductById(UUID id) throws ProductNotFoundException{
         Product product = productRepository.getProductById(id)
                 .orElseThrow(() -> new ProductNotFoundException("Product not found"));
         return productMapper.toDTO(product);
     }
 
-    public ProductDTO addProduct(ProductDTO productDTO) {
-        Product product = productRepository.save(productMapper.toEntity(productDTO));
+    public ProductRespDTO addProduct(ProductReqDTO productReqDTO) {
+        Product product = productRepository.save(productMapper.toEntity(productReqDTO));
         return productMapper.toDTO(product);
     }
 
-    public List<ProductDTO> addAllProducts(List<ProductDTO> productDTOs) {
-        List<Product> products = productDTOs.stream()
+    public List<ProductRespDTO> addAllProducts(List<ProductReqDTO> productReqDTOS) {
+        List<Product> products = productReqDTOS.stream()
                 .map(productMapper::toEntity)
                 .toList();
         List<Product> savedProducts = productRepository.saveAll(products);
@@ -46,14 +47,14 @@ public class ProductService {
                 .toList();
     }
 
-    public ProductDTO updateProduct(UUID id, ProductDTO updatedProductDTO) throws ProductNotFoundException {
+    public ProductRespDTO updateProduct(UUID id, ProductReqDTO updatedProductReqDTO) throws ProductNotFoundException {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new ProductNotFoundException("Product not found"));
-        product.setName(updatedProductDTO.name());
-        product.setDescription(updatedProductDTO.description());
-        product.setPrice(updatedProductDTO.price());
-        product.setQuantity(updatedProductDTO.quantity());
-        product.setCategory(updatedProductDTO.category());
+        product.setName(updatedProductReqDTO.name());
+        product.setDescription(updatedProductReqDTO.description());
+        product.setPrice(updatedProductReqDTO.price());
+        product.setQuantity(updatedProductReqDTO.quantity());
+        product.setCategory(updatedProductReqDTO.category());
         return productMapper.toDTO(productRepository.save(product));
     }
 
