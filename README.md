@@ -50,6 +50,81 @@ Dlaczego to dobry temat?
 🔹 W dalszym rozwoju pozwala na wykorzystanie nowoczesnych technologii: AI do optymalizacji, IoT (jeśli np. uwzględnisz czujniki RFID do śledzenia towarów).
 
 
+
+Oto propozycja typów komunikacji między serwisami w Twoim projekcie, uwzględniając różne podejścia (REST, gRPC, Kafka):
+
+### 1. **auth-service** (serwis autoryzacji)
+- **Typ komunikacji**: REST API
+- **Dlaczego?**:
+    - REST API jest standardem w przypadku autoryzacji i uwierzytelniania.
+    - Łatwość integracji z klientami (np. frontend, inne serwisy).
+    - Możliwość wykorzystania tokenów JWT w nagłówkach HTTP.
+
+---
+
+### 2. **analytics-service** (serwis analityczny)
+- **Typ komunikacji**: Apache Kafka
+- **Dlaczego?**:
+    - Serwis analityczny może subskrybować zdarzenia z innych serwisów (np. `OrderCreated`, `ShipmentCreated`).
+    - Kafka umożliwia asynchroniczne przetwarzanie dużej ilości danych w czasie rzeczywistym.
+    - Możliwość ponownego przetwarzania zdarzeń w przypadku awarii.
+
+---
+
+### 3. **order-service** (serwis zamówień)
+- **Typ komunikacji**: REST API / Apache Kafka
+- **Dlaczego?**:
+    - REST API: Do synchronizacji z serwisami, które potrzebują szczegółowych danych zamówienia (np. `shipment-service`).
+    - Kafka: Do publikowania zdarzeń związanych z zamówieniami (np. `OrderCreated`, `OrderCancelled`), które mogą być subskrybowane przez inne serwisy.
+
+---
+
+### 4. **product-service** (serwis produktów)
+- **Typ komunikacji**: gRPC
+- **Dlaczego?**:
+    - gRPC zapewnia szybką i wydajną komunikację, co jest istotne przy częstym pobieraniu danych o produktach (np. ceny, dostępność).
+    - Binarny format Protobuf zmniejsza rozmiar przesyłanych danych.
+
+---
+
+### 5. **shipment-service** (serwis przesyłek)
+- **Typ komunikacji**: REST API / Apache Kafka
+- **Dlaczego?**:
+    - REST API: Do pobierania szczegółów zamówienia z `order-service` w sposób synchroniczny.
+    - Kafka: Do subskrybowania zdarzeń, takich jak `OrderCreated`, w celu automatycznego tworzenia przesyłek.
+
+---
+
+### 6. **warehouse-service** (serwis magazynowy)
+- **Typ komunikacji**: gRPC / Apache Kafka
+- **Dlaczego?**:
+    - gRPC: Do synchronizacji stanów magazynowych w czasie rzeczywistym (np. rezerwacja produktów).
+    - Kafka: Do obsługi zdarzeń, takich jak `ProductReserved` lub `StockUpdated`, które mogą być publikowane przez inne serwisy.
+
+---
+
+### Podsumowanie:
+- **REST API**: auth-service, order-service (do synchronizacji z shipment-service).
+- **gRPC**: product-service, warehouse-service (do szybkiej komunikacji w czasie rzeczywistym).
+- **Apache Kafka**: analytics-service, order-service (do publikowania zdarzeń), shipment-service, warehouse-service.
+
+Dzięki takiemu podziałowi możesz porównać różne podejścia w praktyce i opisać ich zalety oraz wady w swojej pracy magisterskiej.
+
+Najczęściej używane serwisy w Twoim projekcie prawdopodobnie będą to:
+
+
+auth-service - Serwis autoryzacji będzie wykorzystywany przy każdym żądaniu, aby uwierzytelnić użytkownika i sprawdzić jego uprawnienia.
+
+
+order-service - Serwis zamówień będzie często używany do tworzenia, aktualizowania i pobierania informacji o zamówieniach.
+
+
+product-service - Serwis produktów będzie często wykorzystywany do pobierania informacji o produktach, takich jak ceny, dostępność czy szczegóły.
+
+
+Pozostałe serwisy, takie jak shipment-service, warehouse-service czy analytics-service, mogą być używane rzadziej, w zależności od specyfiki Twojego projektu i wymagań biznesowych
+
+
 ## Prerequisites
 
 Before proceeding, ensure the following tools are installed and properly configured:

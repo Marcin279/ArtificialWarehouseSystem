@@ -1,0 +1,1 @@
+https://chatgpt.com/share/680806ec-7174-8013-8e0f-59a522742356 - Przykład implementacji

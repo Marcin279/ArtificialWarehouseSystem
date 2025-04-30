@@ -109,6 +109,9 @@ services:
       - postgres-products
     networks:
       - microservices-net
+    ports:
+      - "8081:8081"  # REST API
+      - "9090:9090"  # gRPC
 
   shipping-service:
     build: ./shipping-service
