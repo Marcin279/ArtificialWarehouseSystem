@@ -17,6 +17,12 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
+grpc:
+  client:
+    products-service:
+      address: static://products-service:9090
+      negotiation-type: plaintext
+
 management:
   endpoints:
     web:

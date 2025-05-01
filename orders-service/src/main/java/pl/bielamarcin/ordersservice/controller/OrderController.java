@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.bielamarcin.ordersservice.dto.OrderDTO;
 import pl.bielamarcin.ordersservice.exception.OrderNotFoundException;
+import pl.bielamarcin.ordersservice.service.OrderGrpcService;
 import pl.bielamarcin.ordersservice.service.OrderService;
 
 import java.util.List;
@@ -16,10 +17,11 @@ import java.util.UUID;
 public class OrderController {
 
     private final OrderService orderService;
-
+    private final OrderGrpcService orderGrpcService;
     @Autowired
-    public OrderController(OrderService orderService) {
+    public OrderController(OrderService orderService, OrderGrpcService orderGrpcService) {
         this.orderService = orderService;
+        this.orderGrpcService = orderGrpcService;
     }
 
     @GetMapping("/all")
@@ -39,7 +41,7 @@ public class OrderController {
     @PostMapping
     public ResponseEntity<OrderDTO> createOrder(@RequestBody OrderDTO orderDTO) {
         try {
-            return ResponseEntity.ok(orderService.createOrder(orderDTO));
+            return ResponseEntity.ok(orderGrpcService.createOrder(orderDTO));
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
