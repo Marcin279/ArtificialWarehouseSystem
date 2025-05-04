@@ -1,4 +1,4 @@
-package pl.bielamarcin.ordersservice.dto;
+package pl.bielamarcin.shippingservice.dto;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

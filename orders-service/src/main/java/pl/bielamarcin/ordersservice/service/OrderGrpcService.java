@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.bielamarcin.ordersservice.dto.OrderDTO;
 import pl.bielamarcin.ordersservice.dto.ProductDTO;
-import pl.bielamarcin.ordersservice.dto.OrderItemDTO;
 import pl.bielamarcin.ordersservice.exception.ProductNotFoundException;
 import pl.bielamarcin.ordersservice.exception.ServiceGrpcCommunicationException;
 import pl.bielamarcin.ordersservice.mapper.OrderMapper;
@@ -13,13 +12,10 @@ import pl.bielamarcin.ordersservice.model.Order;
 import pl.bielamarcin.ordersservice.model.OrderItem;
 import pl.bielamarcin.ordersservice.repository.OrderItemRepository;
 import pl.bielamarcin.ordersservice.repository.OrderRepository;
+import org.springframework.kafka.core.KafkaTemplate;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,15 +25,18 @@ public class OrderGrpcService {
     private final OrderItemRepository orderItemRepository;
     private final ProductGrpcClientService productService;
     private final OrderMapper orderMapper;
+    private final KafkaTemplate<String, Object> kafkaTemplate;
 
     public OrderGrpcService(OrderRepository orderRepository,
-                        OrderItemRepository orderItemRepository,
-                        ProductGrpcClientService productService,
-                        OrderMapper orderMapper) {
+                            OrderItemRepository orderItemRepository,
+                            ProductGrpcClientService productService,
+                            OrderMapper orderMapper,
+                            KafkaTemplate<String, Object> kafkaTemplate) {
         this.orderRepository = orderRepository;
         this.orderItemRepository = orderItemRepository;
         this.productService = productService;
         this.orderMapper = orderMapper;
+        this.kafkaTemplate = kafkaTemplate;
     }
 
     @Transactional
@@ -47,6 +46,7 @@ public class OrderGrpcService {
         order.setUpdatedAt(LocalDateTime.now());
         order.setStatus(orderDTO.getStatus());
         order.setTotalPrice(orderDTO.getTotalPrice());
+        order.setShippingAddress(orderDTO.getShippingAddress());
 
         final Order finalOrder = order;
         List<OrderItem> orderItems = orderDTO.getOrderItems().stream().map(itemDTO -> {
@@ -71,18 +71,10 @@ public class OrderGrpcService {
         order.setOrderItems(orderItems);
         order = orderRepository.save(order);
         orderItemRepository.saveAll(orderItems);
-        return orderMapper.toDTO(order);
-    }
+        OrderDTO savedOrderDTO = orderMapper.toDTO(order);
 
-    // Metoda mapująca do OrderResponse
-    private OrderDTO mapToOrderResponse(Order order, List<OrderItem> items) {
-        // Implementacja mapowania
-        OrderDTO response = new OrderDTO();
-        response.setId(order.getId());
-        response.setTotalPrice(order.getTotalPrice());
-        response.setCreatedAt(order.getCreatedAt());
-        // pozostałe mapowania
+        kafkaTemplate.send("order-created-topic", savedOrderDTO);
 
-        return response;
+        return savedOrderDTO;
     }
 }

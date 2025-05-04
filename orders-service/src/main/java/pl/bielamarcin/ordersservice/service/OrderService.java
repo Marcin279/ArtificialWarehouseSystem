@@ -53,6 +53,7 @@ public class OrderService {
         order.setUpdatedAt(LocalDateTime.now());
         order.setStatus(orderDTO.getStatus());
         order.setTotalPrice(orderDTO.getTotalPrice());
+        order.setShippingAddress(orderDTO.getShippingAddress());
 
         final Order finalOrder = order;
         List<OrderItem> orderItems = orderDTO.getOrderItems().stream().map(itemDTO -> {
@@ -81,6 +82,7 @@ public class OrderService {
         order.setStatus(updatedOrderDTO.getStatus());
         order.setTotalPrice(updatedOrderDTO.getTotalPrice());
         order.setUpdatedAt(LocalDateTime.now());
+        order.setShippingAddress(updatedOrderDTO.getShippingAddress());
         order = orderRepository.save(order);
         return orderMapper.toDTO(order);
     }

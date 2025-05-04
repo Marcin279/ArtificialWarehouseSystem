@@ -1,6 +1,8 @@
 package pl.bielamarcin.ordersservice.model;
 
 import jakarta.persistence.*;
+import pl.bielamarcin.ordersservice.dto.OrderDTO;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -29,6 +31,9 @@ public class Order {
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
+    @Column(name="shipping_address")
+    private String shippingAddress;
+
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> orderItems;
 
@@ -42,15 +47,16 @@ public class Order {
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
 
-    public BigDecimal getTotalPrice() { return totalPrice; }
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 
     public LocalDateTime getUpdatedAt() { return updatedAt; }
     public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
 
-    public List<OrderItem> getOrderItems() { return orderItems; }
+    public String getShippingAddress() { return shippingAddress; }
+    public void setShippingAddress(String shippingAddress) { this.shippingAddress = shippingAddress; }
 
+    public List<OrderItem> getOrderItems() { return orderItems; }
     public void setOrderItems(List<OrderItem> orderItems) {
         this.orderItems = orderItems;
     }
@@ -58,4 +64,5 @@ public class Order {
     public void setTotalPrice(BigDecimal totalPrice) {
         this.totalPrice = totalPrice;
     }
+    public BigDecimal getTotalPrice() { return totalPrice; }
 }

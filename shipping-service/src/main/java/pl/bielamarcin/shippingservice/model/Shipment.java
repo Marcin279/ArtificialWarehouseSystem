@@ -34,13 +34,13 @@ public class Shipment {
     public void setOrderId(UUID orderId) { this.orderId = orderId; }
 
     public String getShippingAddress() { return shippingAddress; }
-    public void setTrackingNumber(String trackingNumber) { this.shippingAddress = trackingNumber; }
+    public void setShippingAddress(String shippingAddress) { this.shippingAddress = shippingAddress; }
 
     public ShipmentStatus getStatus() { return status; }
     public void setStatus(ShipmentStatus status) { this.status = status; }
 
-    public LocalDateTime getShippedAt() { return createdAt; }
-    public void setShippedAt(LocalDateTime shippedAt) { this.createdAt = shippedAt; }
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 
     public LocalDateTime getDeliveredAt() { return deliveredAt; }
     public void setDeliveredAt(LocalDateTime deliveredAt) { this.deliveredAt = deliveredAt; }

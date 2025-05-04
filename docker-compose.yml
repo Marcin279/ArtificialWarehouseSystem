@@ -72,6 +72,10 @@ services:
       - "27017:27017"
     networks:
       - microservices-net
+    deploy:
+      resources:
+        limits:
+          memory: 512M
 
   # ======================== Mikroserwisy ========================
   auth-service:
@@ -85,6 +89,10 @@ services:
       - postgres-auth
     networks:
       - microservices-net
+    deploy:
+      resources:
+        limits:
+          memory: 512M
 
   orders-service:
     build: ./orders-service
@@ -97,6 +105,10 @@ services:
       - postgres-orders
     networks:
       - microservices-net
+    deploy:
+      resources:
+        limits:
+          memory: 512M
 
   products-service:
     build: ./products-service
@@ -112,6 +124,10 @@ services:
     ports:
       - "8081:8081"  # REST API
       - "9090:9090"  # gRPC
+    deploy:
+      resources:
+        limits:
+          memory: 512M
 
   shipping-service:
     build: ./shipping-service
@@ -120,10 +136,20 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-shipping:5432/shipping_db
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
+      # Dodaj konfigurację poziomu logowania
+      LOGGING_LEVEL_ROOT: WARN
+      LOGGING_LEVEL_PL_BIELAMARCIN_SHIPPINGSERVICE: INFO
+      # Konfiguracja konsumenta Kafka
+      SPRING_KAFKA_CONSUMER_MAX_POLL_RECORDS: 10
+      SPRING_KAFKA_CONSUMER_FETCH_MAX_WAIT: 300
     depends_on:
       - postgres-shipping
     networks:
       - microservices-net
+    deploy:
+      resources:
+        limits:
+          memory: 512M
 
   warehouse-service:
     build: ./warehouse-service
@@ -136,6 +162,10 @@ services:
       - postgres-warehouse
     networks:
       - microservices-net
+    deploy:
+      resources:
+        limits:
+          memory: 512M
 
   analytics-service:
     build: ./analytics-service
@@ -146,6 +176,10 @@ services:
       - mongo-analytics
     networks:
       - microservices-net
+    deploy:
+      resources:
+        limits:
+          memory: 512M
 
   # ======================== API Gateway ========================
   gateway:
@@ -170,6 +204,8 @@ services:
       ZOOKEEPER_CLIENT_PORT: 2181
     ports:
       - "2181:2181"
+    networks:
+      - microservices-net
 
   kafka:
     image: confluentinc/cp-kafka:latest
@@ -181,8 +217,14 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
     depends_on:
       - zookeeper
+    networks:
+      - microservices-net
+
 
 networks:
   microservices-net:
