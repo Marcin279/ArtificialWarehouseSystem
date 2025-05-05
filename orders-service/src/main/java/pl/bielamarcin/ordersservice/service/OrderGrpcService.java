@@ -53,7 +53,6 @@ public class OrderGrpcService {
             ProductDTO product;
             try {
                 product = productService.getProductById(itemDTO.getId());
-                System.out.println("Pobrany produkt: " + product);
             } catch (StatusRuntimeException e) {
                 throw new ServiceGrpcCommunicationException("Błąd komunikacji gRPC: " + e.getMessage());
             } catch (ProductNotFoundException e) {

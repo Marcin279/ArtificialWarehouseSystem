@@ -6,7 +6,6 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 import pl.bielamarcin.shippingservice.dto.OrderDTO;
 import pl.bielamarcin.shippingservice.dto.ShipmentReqDTO;
-import pl.bielamarcin.shippingservice.service.ShipmentService;
 
 @Component
 public class OrderEventListener {
@@ -18,18 +17,11 @@ public class OrderEventListener {
         this.shipmentService = shipmentService;
     }
 
-    @KafkaListener(
-            topics = "order-created-topic",
-            groupId = "shipping-service-group",
-            containerFactory = "kafkaListenerContainerFactory"
-    )
+    @KafkaListener(topics = "order-created-topic", groupId = "shipping-service-group", containerFactory = "kafkaListenerContainerFactory")
     public void handleOrderCreatedEvent(OrderDTO orderDTO) {
         try {
             logger.info("Otrzymano zamowienie: {}", orderDTO.getId());
-            ShipmentReqDTO shipmentReq = new ShipmentReqDTO(
-                    orderDTO.getId(),
-                    orderDTO.getShippingAddress()
-            );
+            ShipmentReqDTO shipmentReq = new ShipmentReqDTO(orderDTO.getId(), orderDTO.getShippingAddress());
 
             shipmentService.createShipment(shipmentReq);
         } catch (Exception e) {

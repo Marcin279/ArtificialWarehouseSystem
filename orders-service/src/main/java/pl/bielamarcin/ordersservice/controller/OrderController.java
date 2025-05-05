@@ -26,7 +26,7 @@ public class OrderController {
 
     @GetMapping("/all")
     public ResponseEntity<List<OrderDTO>> getAllOrders() {
-        return ResponseEntity.ok(orderService.getAllOrders());
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(orderService.getAllOrders());
     }
 
     @GetMapping("/{id}")
