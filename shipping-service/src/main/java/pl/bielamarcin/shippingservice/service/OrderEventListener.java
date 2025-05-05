@@ -20,12 +20,12 @@ public class OrderEventListener {
     @KafkaListener(topics = "order-created-topic", groupId = "shipping-service-group", containerFactory = "kafkaListenerContainerFactory")
     public void handleOrderCreatedEvent(OrderDTO orderDTO) {
         try {
-            logger.info("Otrzymano zamowienie: {}", orderDTO.getId());
-            ShipmentReqDTO shipmentReq = new ShipmentReqDTO(orderDTO.getId(), orderDTO.getShippingAddress());
+            logger.info("Otrzymano zamowienie: {}", orderDTO.id());
+            ShipmentReqDTO shipmentReq = new ShipmentReqDTO(orderDTO.id(), orderDTO.shippingAddress());
 
             shipmentService.createShipment(shipmentReq);
         } catch (Exception e) {
-            logger.error("Błąd podczas przetwarzania zamówienia: {}", orderDTO.getId(), e);
+            logger.error("Błąd podczas przetwarzania zamówienia: {}", orderDTO.id(), e);
         }
     }
 }

@@ -11,9 +11,7 @@ import pl.bielamarcin.ordersservice.model.Order;
 import pl.bielamarcin.ordersservice.model.OrderItem;
 import pl.bielamarcin.ordersservice.repository.OrderItemRepository;
 import pl.bielamarcin.ordersservice.repository.OrderRepository;
-import pl.bielamarcin.ordersservice.service.ProductServiceClient;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -51,13 +49,13 @@ public class OrderService {
         Order order = orderMapper.toEntity(orderDTO);
         order.setCreatedAt(LocalDateTime.now());
         order.setUpdatedAt(LocalDateTime.now());
-        order.setStatus(orderDTO.getStatus());
-        order.setTotalPrice(orderDTO.getTotalPrice());
-        order.setShippingAddress(orderDTO.getShippingAddress());
+        order.setStatus(orderDTO.status());
+        order.setTotalPrice(orderDTO.totalPrice());
+        order.setShippingAddress(orderDTO.shippingAddress());
 
         final Order finalOrder = order;
-        List<OrderItem> orderItems = orderDTO.getOrderItems().stream().map(itemDTO -> {
-            Optional<ProductDTO> productOptional = productServiceClient.getProductById(itemDTO.getId());
+        List<OrderItem> orderItems = orderDTO.orderItems().stream().map(itemDTO -> {
+            Optional<ProductDTO> productOptional = productServiceClient.getProductById(itemDTO.id());
             if (productOptional.isEmpty()) {
                 throw new IllegalArgumentException("Product not found");
             }
@@ -66,7 +64,7 @@ public class OrderService {
             OrderItem orderItem = new OrderItem();
             orderItem.setProductId(product.getId());
             orderItem.setPrice(product.getPrice());
-            orderItem.setQuantity(itemDTO.getQuantity());
+            orderItem.setQuantity(itemDTO.quantity());
             orderItem.setOrder(finalOrder);
             return orderItem;
         }).collect(Collectors.toList());
@@ -79,10 +77,10 @@ public class OrderService {
 
     public OrderDTO updateOrder(UUID id, OrderDTO updatedOrderDTO) throws OrderNotFoundException {
         Order order = orderRepository.findById(id).orElseThrow(() -> new OrderNotFoundException("Order not found"));
-        order.setStatus(updatedOrderDTO.getStatus());
-        order.setTotalPrice(updatedOrderDTO.getTotalPrice());
+        order.setStatus(updatedOrderDTO.status());
+        order.setTotalPrice(updatedOrderDTO.totalPrice());
         order.setUpdatedAt(LocalDateTime.now());
-        order.setShippingAddress(updatedOrderDTO.getShippingAddress());
+        order.setShippingAddress(updatedOrderDTO.shippingAddress());
         order = orderRepository.save(order);
         return orderMapper.toDTO(order);
     }

@@ -29,7 +29,7 @@ public class OrderServiceClient {
             OrderDTO order = restTemplate.getForObject(orderServiceUrl + "/api/orders/" + orderId, OrderDTO.class);
 
             if (order != null) {
-                logger.info("Pobrano zamówienie: {}", order.getId());
+                logger.info("Pobrano zamówienie: {}", order.id());
                 return Optional.of(order);
             }
             return Optional.empty();

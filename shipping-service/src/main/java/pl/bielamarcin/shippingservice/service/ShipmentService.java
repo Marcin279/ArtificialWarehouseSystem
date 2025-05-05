@@ -67,7 +67,6 @@ public class ShipmentService {
         }
     }
 
-
     public ShipmentRespDTO updateShipmentStatus(UUID id, ShipmentStatus status) {
         Shipment shipment = shipmentRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Nie znaleziono przesyłki o ID: " + id));

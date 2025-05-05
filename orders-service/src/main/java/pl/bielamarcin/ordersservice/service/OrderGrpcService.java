@@ -44,15 +44,15 @@ public class OrderGrpcService {
         Order order = orderMapper.toEntity(orderDTO);
         order.setCreatedAt(LocalDateTime.now());
         order.setUpdatedAt(LocalDateTime.now());
-        order.setStatus(orderDTO.getStatus());
-        order.setTotalPrice(orderDTO.getTotalPrice());
-        order.setShippingAddress(orderDTO.getShippingAddress());
+        order.setStatus(orderDTO.status());
+        order.setTotalPrice(orderDTO.totalPrice());
+        order.setShippingAddress(orderDTO.shippingAddress());
 
         final Order finalOrder = order;
-        List<OrderItem> orderItems = orderDTO.getOrderItems().stream().map(itemDTO -> {
+        List<OrderItem> orderItems = orderDTO.orderItems().stream().map(itemDTO -> {
             ProductDTO product;
             try {
-                product = productService.getProductById(itemDTO.getId());
+                product = productService.getProductById(itemDTO.id());
             } catch (StatusRuntimeException e) {
                 throw new ServiceGrpcCommunicationException("Błąd komunikacji gRPC: " + e.getMessage());
             } catch (ProductNotFoundException e) {
@@ -62,7 +62,7 @@ public class OrderGrpcService {
             OrderItem orderItem = new OrderItem();
             orderItem.setProductId(product.getId());
             orderItem.setPrice(product.getPrice());
-            orderItem.setQuantity(itemDTO.getQuantity());
+            orderItem.setQuantity(itemDTO.quantity());
             orderItem.setOrder(finalOrder);
             return orderItem;
         }).collect(Collectors.toList());
