@@ -1,0 +1,72 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "pl.bielamarcin.warehouseservice.grpc";
+
+package warehouse;
+
+service WarehouseService {
+  rpc CheckInventory (InventoryRequest) returns (InventoryResponse);
+  rpc ReserveItems (ReservationRequest) returns (ReservationResponse);
+  rpc ReleaseItems (ReleaseRequest) returns (ReleaseResponse);
+  rpc GetItemLocation (LocationRequest) returns (LocationResponse);
+}
+
+message InventoryRequest {
+  string product_id = 1;
+}
+
+message InventoryResponse {
+  string product_id = 1;
+  int32 quantity = 2;
+  bool available = 3;
+}
+
+message ReservationRequest {
+  string order_id = 1;
+  repeated Item items = 2;
+}
+
+message Item {
+  string product_id = 1;
+  int32 quantity = 2;
+}
+
+message ReservationResponse {
+  string reservation_id = 1;
+  bool success = 2;
+  string message = 3;
+  repeated UnavailableItem unavailable_items = 4;
+}
+
+message UnavailableItem {
+  string product_id = 1;
+  int32 requested_quantity = 2;
+  int32 available_quantity = 3;
+}
+
+message ReleaseRequest {
+  string reservation_id = 1;
+}
+
+message ReleaseResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+message LocationRequest {
+  string product_id = 1;
+}
+
+message LocationResponse {
+  string product_id = 1;
+  repeated WarehouseLocation locations = 2;
+}
+
+message WarehouseLocation {
+  string location_id = 1;
+  string section = 2;
+  string shelf = 3;
+  string bin = 4;
+  int32 quantity = 5;
+}

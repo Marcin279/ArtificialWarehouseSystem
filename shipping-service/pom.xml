@@ -90,11 +90,6 @@
 			<version>33.3.1-jre</version>
 			<scope>compile</scope>
 		</dependency>
-		<!--		<dependency>-->
-<!--			<groupId>org.slf4j</groupId>-->
-<!--			<artifactId>slf4j-api</artifactId>-->
-<!--			<version>1.7.36</version>-->
-<!--		</dependency>-->
 		<dependency>
 			<groupId>org.mapstruct</groupId>
 			<artifactId>mapstruct</artifactId>
