@@ -59,29 +59,24 @@ public class InventoryService {
 
         if (existingItem.isPresent()) {
             // Jeśli produkt już istnieje, dodajemy do stanu
-            return addStock(existingItem.get().getId(), dto.reservedQuantity());
+            return addStock(existingItem.get().getId(), dto.totalQuantity());
         }
 
         // Tworzymy nowy wpis w magazynie
         InventoryItem item = new InventoryItem();
         item.setId(UUID.randomUUID());
         item.setProductId(dto.productId());
-        item.setAvailableQuantity(dto.reservedQuantity());
-        item.setTotalQuantity(dto.reservedQuantity());
-        if (dto.reservedQuantity() == null) {
-            // Ustawienie domyślnej wartości 0 dla reservedQuantity
-            item.setReservedQuantity(0);
-        } else {
-            item.setReservedQuantity(dto.reservedQuantity());
-        }
+        item.setAvailableQuantity(dto.totalQuantity());
+        item.setTotalQuantity(dto.totalQuantity());
+        item.setReservedQuantity(0);
 
         InventoryItem savedItem = inventoryItemRepository.save(item);
 
         // Rejestrujemy transakcję dodania do stanu
-        registerStockTransaction(dto.productId(), dto.reservedQuantity(), TransactionType.STOCK_ADDITION, null);
+        registerStockTransaction(dto.productId(), dto.totalQuantity(), TransactionType.STOCK_ADDITION, null);
 
         // Publikujemy zdarzenie o aktualizacji stanu
-        eventProducer.sendStockUpdated(dto.productId(), dto.reservedQuantity());
+        eventProducer.sendStockUpdated(dto.productId(), dto.totalQuantity());
 
 //        // Jeśli podano lokalizację, przypisujemy produkt do lokalizacji
 //        if (dto.section() != null && dto.shelf() != null && dto.bin() != null) {

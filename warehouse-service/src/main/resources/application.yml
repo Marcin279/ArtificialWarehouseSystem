@@ -32,10 +32,14 @@ kafka:
   bootstrap-servers: localhost:9092
   consumer:
     group-id: warehouse-service
-    auto-offset-reset: earliest
-  producer:
     key-serializer: org.apache.kafka.common.serialization.StringSerializer
     value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    auto-offset-reset: latest
+  producer:
+    group-id: warehouse-service
+    key-serializer: org.apache.kafka.common.serialization.StringSerializer
+    value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    auto-offset-reset: latest
 
 management:
   endpoints:

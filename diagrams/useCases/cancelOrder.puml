@@ -1,0 +1,12 @@
+@startuml Cancel order
+Client -> OrderService: Cancel Order
+OrderService -> Kafka: publish order-cancelled
+
+Kafka -> WarehouseService: event order-cancelled
+WarehouseService -> WarehouseService: release reservation
+WarehouseService -> WarehouseService: create stock_transactions (RESERVATION_RELEASE)
+WarehouseService -> Kafka: publish product-released
+
+Kafka -> ShippingService: event order-cancelled
+ShippingService -> ShippingService: update shipment status (cancelled)
+@enduml

@@ -1,0 +1,23 @@
+@startuml
+Client -> AuthService: POST /login (username, password)
+AuthService -> AuthService: validate credentials
+alt Prawidłowe dane
+    AuthService -> AuthService: generate JWT token
+    AuthService --> Client: token (JWT)
+else Nieprawidłowe dane
+    AuthService --> Client: HTTP 401 Unauthorized
+end
+
+== Zautoryzowane zapytanie do OrderService ==
+
+Client -> OrderService: POST /order (Authorization: Bearer token)
+OrderService -> AuthService: verifyToken(token)
+AuthService --> OrderService: token valid + user info
+
+alt Token poprawny
+    OrderService -> OrderService: process order...
+else Token niepoprawny
+    OrderService --> Client: HTTP 403 Forbidden
+end
+
+@enduml

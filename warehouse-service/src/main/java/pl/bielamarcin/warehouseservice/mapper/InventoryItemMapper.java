@@ -12,17 +12,16 @@ public interface InventoryItemMapper {
 
     @Mapping(source = "id", target = "id")
     @Mapping(source = "productId", target = "productId")
-    @Mapping(source = "totalQuantity", target = "totalQuantity")
     @Mapping(source = "availableQuantity", target = "availableQuantity")
-    @Mapping(source = "reservedQuantity", target = "reservedQuantity")
+    @Mapping(source = "totalQuantity", target = "totalQuantity")
     @Mapping(source = "lastUpdated", target = "lastUpdated")
     InventoryItemRespDTO toDto(InventoryItem item);
 
     @Mapping(source = "productId", target = "productId")
-    @Mapping(source = "reservedQuantity", target = "reservedQuantity")
+    @Mapping(source = "totalQuantity", target = "totalQuantity")
     InventoryItem toEntity(InventoryItemReqDTO dto);
 
     @Mapping(source = "productId", target = "productId")
-    @Mapping(source = "reservedQuantity", target = "reservedQuantity")
+    @Mapping(source = "totalQuantity", target = "totalQuantity")
     void updateEntityFromDto(InventoryItemReqDTO dto, @MappingTarget InventoryItem entity);
 }

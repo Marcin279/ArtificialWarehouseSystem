@@ -10,6 +10,7 @@ import pl.bielamarcin.warehouseservice.model.InventoryItem;
 import pl.bielamarcin.warehouseservice.service.InventoryService;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -56,7 +57,8 @@ public class InventoryController {
     @PostMapping("/{id}/add-stock")
     public ResponseEntity<InventoryItemRespDTO> addStock(
             @PathVariable UUID id,
-            @RequestParam int quantity) {
+            @RequestBody Map<String, Integer> requestBody) {
+        int quantity = requestBody.get("quantity");
         return ResponseEntity.ok(inventoryService.addStock(id, quantity));
     }
 
