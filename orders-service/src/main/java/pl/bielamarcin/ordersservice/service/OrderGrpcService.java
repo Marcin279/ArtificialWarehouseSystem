@@ -1,9 +1,11 @@
 package pl.bielamarcin.ordersservice.service;
 
 import io.grpc.StatusRuntimeException;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.bielamarcin.ordersservice.dto.OrderDTO;
+import pl.bielamarcin.ordersservice.dto.OrderReqDTO;
 import pl.bielamarcin.ordersservice.dto.ProductDTO;
 import pl.bielamarcin.ordersservice.exception.ProductNotFoundException;
 import pl.bielamarcin.ordersservice.exception.ServiceGrpcCommunicationException;
@@ -12,8 +14,8 @@ import pl.bielamarcin.ordersservice.model.Order;
 import pl.bielamarcin.ordersservice.model.OrderItem;
 import pl.bielamarcin.ordersservice.repository.OrderItemRepository;
 import pl.bielamarcin.ordersservice.repository.OrderRepository;
-import org.springframework.kafka.core.KafkaTemplate;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -40,16 +42,15 @@ public class OrderGrpcService {
     }
 
     @Transactional
-    public OrderDTO createOrder(OrderDTO orderDTO) {
-        Order order = orderMapper.toEntity(orderDTO);
+    public OrderDTO createOrder(OrderReqDTO orderReqDTO) {
+        Order order = orderMapper.toEntity(orderReqDTO);
         order.setCreatedAt(LocalDateTime.now());
         order.setUpdatedAt(LocalDateTime.now());
-        order.setStatus(orderDTO.status());
-        order.setTotalPrice(orderDTO.totalPrice());
-        order.setShippingAddress(orderDTO.shippingAddress());
+        order.setStatus(orderReqDTO.status());
+        order.setShippingAddress(orderReqDTO.shippingAddress());
 
         final Order finalOrder = order;
-        List<OrderItem> orderItems = orderDTO.orderItems().stream().map(itemDTO -> {
+        List<OrderItem> orderItems = orderReqDTO.orderItems().stream().map(itemDTO -> {
             ProductDTO product;
             try {
                 product = productService.getProductById(itemDTO.id());
@@ -66,6 +67,11 @@ public class OrderGrpcService {
             orderItem.setOrder(finalOrder);
             return orderItem;
         }).collect(Collectors.toList());
+
+        BigDecimal totalPrice = orderItems.stream()
+                .map(item -> item.getPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        order.setTotalPrice(totalPrice);
 
         order.setOrderItems(orderItems);
         order = orderRepository.save(order);

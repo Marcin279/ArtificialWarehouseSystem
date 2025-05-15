@@ -1,4 +1,4 @@
-package pl.BielaMarcin.authservice.config;
+package pl.bielamarcin.authservice.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

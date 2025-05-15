@@ -3,6 +3,7 @@ package pl.bielamarcin.ordersservice.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.bielamarcin.ordersservice.dto.OrderDTO;
+import pl.bielamarcin.ordersservice.dto.OrderReqDTO;
 import pl.bielamarcin.ordersservice.dto.ProductDTO;
 import pl.bielamarcin.ordersservice.exception.OrderNotFoundException;
 import pl.bielamarcin.ordersservice.mapper.OrderItemMapper;
@@ -12,6 +13,7 @@ import pl.bielamarcin.ordersservice.model.OrderItem;
 import pl.bielamarcin.ordersservice.repository.OrderItemRepository;
 import pl.bielamarcin.ordersservice.repository.OrderRepository;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -45,12 +47,11 @@ public class OrderService {
         return orderMapper.toDTO(order);
     }
 
-    public OrderDTO createOrder(OrderDTO orderDTO) throws Exception {
+    public OrderDTO createOrder(OrderReqDTO orderDTO) throws Exception {
         Order order = orderMapper.toEntity(orderDTO);
         order.setCreatedAt(LocalDateTime.now());
         order.setUpdatedAt(LocalDateTime.now());
         order.setStatus(orderDTO.status());
-        order.setTotalPrice(orderDTO.totalPrice());
         order.setShippingAddress(orderDTO.shippingAddress());
 
         final Order finalOrder = order;
@@ -68,6 +69,11 @@ public class OrderService {
             orderItem.setOrder(finalOrder);
             return orderItem;
         }).collect(Collectors.toList());
+
+        BigDecimal totalPrice = orderItems.stream()
+                .map(item -> item.getPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        order.setTotalPrice(totalPrice);
 
         order.setOrderItems(orderItems);
         order = orderRepository.save(order);
@@ -92,7 +98,7 @@ public class OrderService {
         orderRepository.deleteById(id);
     }
 
-    public List<OrderDTO> createAllOrders(List<OrderDTO> orderDTOs) {
+    public List<OrderDTO> createAllOrders(List<OrderReqDTO> orderDTOs) {
         List<Order> orders = orderDTOs.stream().map(orderMapper::toEntity).collect(Collectors.toList());
         LocalDateTime now = LocalDateTime.now();
         orders.forEach(order -> {

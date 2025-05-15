@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.bielamarcin.ordersservice.dto.OrderDTO;
+import pl.bielamarcin.ordersservice.dto.OrderReqDTO;
 import pl.bielamarcin.ordersservice.exception.OrderNotFoundException;
 import pl.bielamarcin.ordersservice.service.OrderGrpcService;
 import pl.bielamarcin.ordersservice.service.OrderService;
@@ -18,13 +19,14 @@ public class OrderController {
 
     private final OrderService orderService;
     private final OrderGrpcService orderGrpcService;
+
     @Autowired
     public OrderController(OrderService orderService, OrderGrpcService orderGrpcService) {
         this.orderService = orderService;
         this.orderGrpcService = orderGrpcService;
     }
 
-    @GetMapping("/all")
+    @GetMapping()
     public ResponseEntity<List<OrderDTO>> getAllOrders() {
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(orderService.getAllOrders());
     }
@@ -39,7 +41,7 @@ public class OrderController {
     }
 
     @PostMapping
-    public ResponseEntity<OrderDTO> createOrder(@RequestBody OrderDTO orderDTO) {
+    public ResponseEntity<OrderDTO> createOrder(@RequestBody OrderReqDTO orderDTO) {
         try {
             return ResponseEntity.ok(orderGrpcService.createOrder(orderDTO));
         } catch (Exception e) {
@@ -48,7 +50,7 @@ public class OrderController {
     }
 
     @PostMapping("/all")
-    public ResponseEntity<List<OrderDTO>> createAllOrders(@RequestBody List<OrderDTO> orderDTOs) {
+    public ResponseEntity<List<OrderDTO>> createAllOrders(@RequestBody List<OrderReqDTO> orderDTOs) {
         return ResponseEntity.status(HttpStatus.CREATED).body(orderService.createAllOrders(orderDTOs));
     }
 
