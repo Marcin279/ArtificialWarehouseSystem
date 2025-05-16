@@ -1,23 +1,25 @@
 package pl.bielamarcin.productsservice.service;
 
-import io.grpc.stub.StreamObserver;
-import org.springframework.stereotype.Service;
 import com.google.protobuf.Empty;
+import io.grpc.stub.StreamObserver;
+import net.devh.boot.grpc.server.service.GrpcService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pl.bielamarcin.productsservice.dto.ProductReqDTO;
 import pl.bielamarcin.productsservice.dto.ProductRespDTO;
 import pl.bielamarcin.productsservice.exception.ProductNotFoundException;
-import pl.bielamarcin.productsservice.grpc.ProductServiceProto;
 import pl.bielamarcin.productsservice.grpc.ProductServiceGrpc;
+import pl.bielamarcin.productsservice.grpc.ProductServiceProto;
 import pl.bielamarcin.productsservice.model.ProductCategory;
 
 import java.math.BigDecimal;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import net.devh.boot.grpc.server.service.GrpcService;
 
 @GrpcService
 public class ProductGrpcService extends ProductServiceGrpc.ProductServiceImplBase {
     private final ProductService productService;
+    private static final Logger logger = LoggerFactory.getLogger(ProductGrpcService.class);
 
     public ProductGrpcService(ProductService productService) {
         this.productService = productService;
@@ -35,6 +37,7 @@ public class ProductGrpcService extends ProductServiceGrpc.ProductServiceImplBas
 
         responseObserver.onNext(response);
         responseObserver.onCompleted();
+        logger.info("GRPC: All products returned");
     }
 
     @Override
@@ -43,6 +46,7 @@ public class ProductGrpcService extends ProductServiceGrpc.ProductServiceImplBas
             ProductRespDTO product = productService.getProductById(UUID.fromString(request.getId()));
             responseObserver.onNext(mapToGrpcProduct(product));
             responseObserver.onCompleted();
+            logger.info("GRPC: Product with ID {} returned", request.getId());
         } catch (ProductNotFoundException e) {
             responseObserver.onError(e);
         }
@@ -61,6 +65,7 @@ public class ProductGrpcService extends ProductServiceGrpc.ProductServiceImplBas
         ProductRespDTO createdProduct = productService.addProduct(productReqDTO);
         responseObserver.onNext(mapToGrpcProduct(createdProduct));
         responseObserver.onCompleted();
+        logger.info("GRPC: Product with ID {} created", createdProduct.id());
     }
 
     @Override

@@ -6,7 +6,10 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "inventory_items")
+@Table(name = "inventory_items",
+        uniqueConstraints = {
+                @UniqueConstraint(name = "uk_inventory_item_product_id", columnNames = {"product_id"})
+        }) // Add unique constraint on product_id - Added to prevent duplicate entries
 public class InventoryItem {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

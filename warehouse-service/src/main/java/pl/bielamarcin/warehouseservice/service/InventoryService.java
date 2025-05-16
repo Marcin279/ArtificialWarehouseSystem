@@ -3,6 +3,7 @@ package pl.bielamarcin.warehouseservice.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import pl.bielamarcin.warehouseservice.dto.*;
 import pl.bielamarcin.warehouseservice.event.WarehouseEventProducer;
@@ -139,7 +140,7 @@ public class InventoryService {
         return inventoryItemRepository.findById(id);
     }
 
-    @Transactional
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     public ReservationResult reserveItems(UUID orderId, List<ItemDTO> items) {
         ReservationResult result = new ReservationResult();
         result.setReservationId(UUID.randomUUID());

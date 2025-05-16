@@ -1,6 +1,8 @@
 package pl.bielamarcin.ordersservice.service;
 
 import io.grpc.StatusRuntimeException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +30,7 @@ public class OrderGrpcService {
     private final ProductGrpcClientService productService;
     private final OrderMapper orderMapper;
     private final KafkaTemplate<String, Object> kafkaTemplate;
+    private static final Logger logger = LoggerFactory.getLogger(OrderGrpcService.class);
 
     public OrderGrpcService(OrderRepository orderRepository,
                             OrderItemRepository orderItemRepository,
@@ -80,6 +83,7 @@ public class OrderGrpcService {
 
         kafkaTemplate.send("order-created-topic", savedOrderDTO);
 
+        logger.info("Order created: {}", savedOrderDTO);
         return savedOrderDTO;
     }
 }
