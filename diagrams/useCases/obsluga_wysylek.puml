@@ -1,0 +1,16 @@
+@startuml
+left to right direction
+actor "Order Service" as Order
+actor "Worker" as User
+actor "Message Broker" as Kafka
+
+rectangle "Shipment Service" {
+    Order --> (Utwórz przesyłkę)
+    Order --> (Pobierz dane zamówienia)
+    User --> (Anuluj przesyłkę)
+
+    (Utwórz przesyłkę) --> Kafka : order-shipped
+    (Anuluj przesyłkę) --> Kafka : shipment-cancelled
+}
+@enduml
+

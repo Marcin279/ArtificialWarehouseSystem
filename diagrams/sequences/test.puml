@@ -1,0 +1,65 @@
+@startuml "Architektura systemu"
+' Style diagramu
+skinparam componentStyle rectangle
+skinparam database {
+  BorderColor black
+  BackgroundColor white
+}
+skinparam rectangle {
+  BorderColor black
+  BackgroundColor white
+}
+
+' Definicja ograniczonych kontekstów jako komponenty
+component "Products Context" as PC {
+  database "ProductsDB" as PDB
+  rectangle "Tables" as PT {
+    rectangle "Products"
+    rectangle "Categories"
+  }
+  PDB --> PT
+}
+
+component "Orders Context" as OC {
+  database "OrdersDB" as ODB
+  rectangle "Tables" as OT {
+    rectangle "Orders"
+    rectangle "OrderItems"
+  }
+  ODB --> OT
+}
+
+component "Warehouse Context" as WC {
+  database "WarehouseDB" as WDB
+  rectangle "Tables" as WT {
+    rectangle "InventoryItems"
+    rectangle "Locations"
+    rectangle "StockTransactions"
+  }
+  WDB --> WT
+}
+
+component "Shipping Context" as SC {
+  database "ShippingDB" as SDB
+  rectangle "Tables" as ST {
+    rectangle "Shipments"
+    rectangle "ShippingLabels"
+  }
+  SDB --> ST
+}
+
+' Relacje między kontekstami
+OC -right-> PC : gRPC (getProductById)
+OC -down-> WC : Kafka (order-created-topic)
+OC -down-> SC : Kafka (order-created-topic)
+SC -left-> OC : REST (getOrderById)
+WC -left-> PC : gRPC (getProductById)
+
+' Gateway API
+component "API Gateway" as GW
+
+GW -down-> PC : REST
+GW -down-> OC : REST
+GW -down-> WC : REST
+GW -down-> SC : REST
+@enduml

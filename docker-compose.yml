@@ -229,7 +229,56 @@ services:
     networks:
       - microservices-net
 
-      # ======================== API Gateway ========================
+  postgres_exporter_products-db:
+    image: prometheuscommunity/postgres-exporter
+    restart: always
+    ports:
+      - "9187:9187"
+    environment:
+      DATA_SOURCE_NAME: "postgresql://postgres:postgres@postgres-products:5432/products_db?sslmode=disable"
+    depends_on:
+      - postgres-products
+    networks:
+      - microservices-net
+
+  postgres_exporter_orders-db:
+    image: prometheuscommunity/postgres-exporter
+    restart: always
+    ports:
+      - "9188:9187"
+    environment:
+      DATA_SOURCE_NAME: "postgresql://postgres:postgres@postgres-orders:5432/orders_db?sslmode=disable"
+    depends_on:
+      - postgres-orders
+    networks:
+      - microservices-net
+
+  postgres_exporter_shipping-db:
+    image: prometheuscommunity/postgres-exporter
+    restart: always
+    ports:
+      - "9189:9187"
+    environment:
+      DATA_SOURCE_NAME: "postgresql://postgres:postgres@postgres-shipping:5432/shipping_db?sslmode=disable"
+    depends_on:
+      - postgres-shipping
+    networks:
+      - microservices-net
+
+  postgres_exporter_warehouse-db:
+    image: prometheuscommunity/postgres-exporter
+    restart: always
+    ports:
+      - "9190:9187"
+    environment:
+      DATA_SOURCE_NAME: "postgresql://postgres:postgres@postgres-warehouse:5432/warehouse_db?sslmode=disable"
+    depends_on:
+      - postgres-warehouse
+    networks:
+      - microservices-net
+
+
+    # ======================== API Gateway ========================
   gateway:
     build: ./gateway
     container_name: gateway
@@ -272,6 +321,7 @@ services:
       - zookeeper
     networks:
       - microservices-net
+
 
 networks:
   microservices-net:

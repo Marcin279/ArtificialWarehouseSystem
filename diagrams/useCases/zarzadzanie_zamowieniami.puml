@@ -1,0 +1,14 @@
+@startuml
+left to right direction
+actor Klient
+actor "Warehouse Service" as Warehouse
+actor "Message Broker" as Kafka
+
+rectangle "Order Service" {
+    Klient --> (Złóż zamówienie)
+    Warehouse --> (Sprawdź dostępność produktów)
+    Warehouse --> (Rezerwuj produkty)
+    (Złóż zamówienie) --> Kafka : order-created
+    (Anuluj zamówienie) --> Kafka : order-cancelled
+}
+@enduml

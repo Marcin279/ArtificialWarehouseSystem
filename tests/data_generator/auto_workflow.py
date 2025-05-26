@@ -44,6 +44,45 @@ def create_product():
     context["product_id"] = product_id
     print(f"📦 Utworzono produkt: {product_id}")
 
+
+# Nowe funkcje do tworzenia wielu produktów na raz
+def create_multiple_products(count=5):
+    """Tworzenie wielu produktów w jednym żądaniu"""
+    url = f"{URL_BASE}{PRODUCT_SERVICE_URL}/all"  # Załóż, że endpoint /batch istnieje
+
+    # Przygotuj listę produktów
+    products = []
+    for _ in range(count):
+        product = {
+            "name": f"Produkt_{random.randint(1, 1000)}",
+            "description": " ".join(random.choices([
+                "Innowacyjny produkt, który zmienia zasady gry.",
+                "Najwyższa jakość wykonania i niezawodność.",
+                "Idealny wybór dla wymagających użytkowników.",
+                "Produkt, który łączy funkcjonalność z estetyką.",
+                "Nowoczesne rozwiązanie dla codziennych potrzeb.",
+            ], k=random.randint(1, 2))),
+            "price": round(random.uniform(10.0, 100.0), 2),
+            "quantity": random.randint(1, 500),
+            "category": random.choice(list(ProductCategory)).name,
+        }
+        products.append(product)
+
+    # Wyślij żądanie
+    response = requests.post(url, json=products)
+    response.raise_for_status()
+
+    # Zapisz ID produktów do kontekstu
+    product_ids = response.json()
+    context["product_ids"] = product_ids
+    print(f"📦 Utworzono {len(product_ids)} produktów: {product_ids}")
+
+    # Zachowaj pierwszy produkt jako główny (dla kompatybilności z istniejącym kodem)
+    if product_ids:
+        context["product_id"] = product_ids[0]
+
+    return product_ids
+
 def create_order():
     url = f"{URL_BASE}{ORDER_SERVICE_URL}"
     payload = {

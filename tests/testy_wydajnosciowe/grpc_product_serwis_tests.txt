@@ -1,0 +1,64 @@
+INFO[0060] Załadowano plik product.proto                 source=console                                                                                                                 
+                                                                                                                                                                                        
+                                                                                                                                                                                        
+  █ TOTAL RESULTS                                                                                                                                                                       
+
+    EXECUTION
+    iteration_duration.....................: avg=2.49ms   min=0s med=1.59ms max=535.95ms p(90)=3.75ms p(95)=4.27ms
+    iterations.............................: 14576  242.932794/s
+    vus....................................: 2      min=2        max=2
+    vus_max................................: 2      min=2        max=2
+
+    NETWORK
+    data_received..........................: 714 kB 12 kB/s
+    data_sent..............................: 612 kB 10 kB/s
+
+    GRPC
+    grpc_duration..........................: avg=0.221254 min=0  med=0      max=4        p(90)=1      p(95)=1
+
+
+
+
+running (1m00.0s), 0/2 VUs, 14576 complete and 2 interrupted iterations
+
+Twoje wyniki testu wydajnościowego z k6 dostarczają wielu cennych informacji o wydajności Twojego serwera gRPC. Oto ich interpretacja:
+
+1. EXECUTION (Wykonanie testu)
+iteration_duration
+
+avg=2.49ms – średni czas trwania jednej iteracji testu (czyli od wysłania żądania do otrzymania odpowiedzi).
+
+min=0s – sugeruje, że niektóre zapytania mogły nie być poprawnie mierzone lub były natychmiastowo odrzucane.
+
+max=535.95ms – pokazuje, że jedno z zapytań miało znacznie wyższy czas odpowiedzi. Możliwe, że serwer był przez chwilę przeciążony.
+
+p(90)=3.75ms, p(95)=4.27ms – 90% żądań zakończyło się w czasie ≤3.75ms, a 95% w czasie ≤4.27ms. To dobre wskaźniki stabilności.
+
+iterations=14576 – test wykonał 14 576 żądań w czasie testu, czyli około 243 zapytania na sekundę.
+
+vus=2 – używano 2 wirtualnych użytkowników (VUs) do symulacji obciążenia.
+
+2. NETWORK (Sieć)
+data_received=714 kB (12 kB/s) – łączna ilość odebranych danych podczas testu.
+
+data_sent=612 kB (10 kB/s) – ilość wysłanych danych.
+
+Przepływ danych wygląda na stosunkowo niski, co oznacza, że odpowiedzi serwera są lekkie.
+
+3. GRPC (Metryki gRPC)
+grpc_duration
+
+avg=0.221ms – średni czas odpowiedzi gRPC jest bardzo szybki.
+
+min=0ms – może sugerować błędnie zmierzone zapytania lub wyjątkowo szybkie operacje.
+
+max=4ms – najdłużej trwające zapytanie trwało 4 ms, co nadal jest bardzo dobre.
+
+p(90)=1ms, p(95)=1ms – 90% zapytań zakończyło się w ≤1ms.
+
+Wnioski
+🔹 Serwer gRPC działa sprawnie – większość żądań jest obsługiwana w czasie ≤4ms, co jest bardzo dobrym wynikiem. 🔹 Nie ma wyraźnych przeciążeń – ale jedno zapytanie miało 535ms, co może wskazywać na sporadyczne przeciążenia. 🔹 Stabilność – czas odpowiedzi jest przewidywalny i szybki. 🔹 Optymalizacja – jeśli chcesz poprawić wyniki, warto sprawdzić co spowodowało pojedyncze długie czasy odpowiedzi (max=535ms). Może warto profilować wydajność serwera.
+
+Jeśli chcesz zrobić bardziej intensywny test, spróbuj zwiększyć vus do 5-10 i przeanalizować, czy wydajność pozostaje stabilna. 🚀
+
+Czy masz dodatkowe pytania dotyczące wyników?
