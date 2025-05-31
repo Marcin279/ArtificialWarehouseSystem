@@ -132,6 +132,7 @@ public class InventoryService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public Optional<InventoryItem> getInventoryItemByProductId(UUID productId) {
         return inventoryItemRepository.findByProductId(productId);
     }

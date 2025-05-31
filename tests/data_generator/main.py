@@ -93,7 +93,7 @@ if __name__ == '__main__':
     create_warehouse_location()
 
     # Parametry symulacji
-    NUM_CLIENTS = 50  # Zmniejszono z 100000 dla początkowych testów
+    NUM_CLIENTS = 100000  # Zmniejszono z 100000 dla początkowych testów
     MAX_CONCURRENT = 30  # Zmieniono z 1 na 5 dla lepszej wydajności
 
     print(f"Uruchamianie symulacji z {NUM_CLIENTS} klientami ({MAX_CONCURRENT} jednocześnie)...")
@@ -101,7 +101,7 @@ if __name__ == '__main__':
     # Użycie ThreadPoolExecutor do równoległego wykonania zadań
     with ThreadPoolExecutor(max_workers=MAX_CONCURRENT) as executor:
         # Uruchomienie zadań
-        results = list(executor.map(lambda _: process_client_workflow_many_product_with_many_request(), range(NUM_CLIENTS)))
+        results = list(executor.map(lambda _: process_client_workflow(), range(NUM_CLIENTS)))
 
     # Podsumowanie
     successful = results.count(True)
