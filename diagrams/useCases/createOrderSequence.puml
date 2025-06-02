@@ -1,0 +1,36 @@
+@startuml Zamowienie i wysylka produktu
+
+Client -> ProductService: GET /products
+ProductService --> Client: List<Product>
+
+Client -> OrderService: POST /order
+OrderService -> ProductService: gRPC getProductInfo()
+ProductService --> OrderService: product details
+
+OrderService -> WarehouseService: gRPC checkInventory()
+WarehouseService --> OrderService: availability
+
+alt Produkty dostępne
+  OrderService -> WarehouseService: gRPC reserveItems()
+  WarehouseService -> WarehouseService: create stock_transactions (RESERVATION)
+  WarehouseService --> OrderService: ReservationConfirmed
+
+  OrderService -> OrderService: saveOrder()
+  OrderService -> Kafka: publish order-created
+
+  WarehouseService -> Kafka: publish product-reserved
+end
+
+Kafka -> ShippingService: event order-created
+ShippingService -> OrderService: HTTP getOrderDetails()
+ShippingService -> ShippingService: create shipment
+ShippingService -> Kafka: publish order-shipped
+
+Kafka -> WarehouseService: event order-shipped
+WarehouseService -> WarehouseService: update stock (RELEASED)
+WarehouseService -> WarehouseService: create stock_transactions (STOCK_REMOVAL)
+WarehouseService -> Kafka: publish stock-updated
+
+Kafka -> ProductService: event stock-updated
+
+@enduml

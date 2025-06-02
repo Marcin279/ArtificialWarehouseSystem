@@ -22,7 +22,7 @@ public class ProductController {
         this.productService = productService;
     }
 
-    @GetMapping("/all")
+    @GetMapping()
     public ResponseEntity<List<ProductRespDTO>> getAllProducts() {
         return ResponseEntity.ok(productService.getAllProducts());
     }

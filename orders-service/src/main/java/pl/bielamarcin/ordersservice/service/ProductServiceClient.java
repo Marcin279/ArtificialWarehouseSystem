@@ -12,7 +12,7 @@ import java.util.logging.Logger;
 @Service
 public class ProductServiceClient {
 
-    private static final Logger logger = Logger.getLogger(ProductServiceClient.class.getName());
+    static final Logger logger = Logger.getLogger(ProductServiceClient.class.getName());
     private final RestTemplate restTemplate;
 
     public ProductServiceClient(RestTemplate restTemplate) {

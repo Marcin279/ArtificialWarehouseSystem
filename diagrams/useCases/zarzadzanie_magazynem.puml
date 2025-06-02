@@ -1,0 +1,15 @@
+@startuml
+left to right direction
+actor Magazynier
+actor "Order Service" as OrderService
+actor "Message Broker" as Kafka
+
+rectangle "Warehouse Service" {
+    Magazynier --> (Aktualizuj lokalizację produktu)
+    Magazynier --> (Wydaj produkt)
+    Magazynier --> (Zwolnij rezerwację)
+    OrderService --> (Rezerwuj produkt)
+    (Rezerwuj produkt) --> Kafka : product-reserved
+    (Aktualizuj stan magazynowy) --> Kafka : stock-updated
+}
+@enduml

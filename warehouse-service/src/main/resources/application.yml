@@ -17,6 +17,30 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
+grpc:
+  product-service:
+    host: products-service
+    port: 9090
+  client:
+    products-service:
+      address: static://products-service:9090
+      negotiation-type: plaintext
+  server:
+    port: 9094
+
+kafka:
+  bootstrap-servers: localhost:9092
+  consumer:
+    group-id: warehouse-service
+    key-serializer: org.apache.kafka.common.serialization.StringSerializer
+    value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    auto-offset-reset: latest
+  producer:
+    group-id: warehouse-service
+    key-serializer: org.apache.kafka.common.serialization.StringSerializer
+    value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    auto-offset-reset: latest
+
 management:
   endpoints:
     web:

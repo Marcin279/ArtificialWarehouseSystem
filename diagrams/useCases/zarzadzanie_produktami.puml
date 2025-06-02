@@ -1,0 +1,20 @@
+@startuml
+left to right direction
+actor Admin
+actor "Inny serwis" as OtherService
+actor "Klient" as Client
+
+rectangle "Product Service" {
+    Admin --> (Dodaj produkt)
+    Admin --> (Edytuj produkt)
+    Admin --> (Usuń produkt)
+    Admin --> (Wyświetl szczegóły produktu)
+    Admin --> (Zarządzaj kategoriami)
+    OtherService --> (Pobierz informacje o produkcie)
+    OtherService --> (Wyświetl szczegóły produktu)
+    Client --> (Pobierz informacje o produkcie)
+    Client --> (Wyświetl szczegóły produktu)
+    WarehouseWorker --> (Pobierz informacje o produkcie)
+    WarehouseWorker --> (Wyświetl szczegóły produktu)
+}
+@enduml

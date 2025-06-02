@@ -1,0 +1,79 @@
+
+
+  █ TOTAL RESULTS
+
+    HTTP
+    http_req_duration......................: avg=30.1s  min=30.1s  med=30.1s  max=30.1s  p(90)=30.1s  p(95)=30.1s
+    http_req_failed........................: 100.00% 2 out of 2
+    http_reqs..............................: 2       0.06642/s
+
+    EXECUTION
+    iteration_duration.....................: avg=30.11s min=30.11s med=30.11s max=30.11s p(90)=30.11s p(95)=30.11s
+    iterations.............................: 2       0.06642/s
+    vus....................................: 2       min=2                 max=2
+    vus_max................................: 2       min=2                 max=2
+
+    NETWORK
+    data_received..........................: 642 B   21 B/s
+    data_sent..............................: 164 B   5.446428916871172 B/s
+
+
+
+                                                                                                                                                              
+running (0m30.1s), 0/2 VUs, 2 complete and 0 interrupted iterations
+
+
+Twoje nowe testy REST API pokazują poprawne działanie serwera, więc możemy teraz je dokładnie przeanalizować i porównać z wynikami gRPC.
+
+🔍 Analiza testów REST API
+1️⃣ Czas odpowiedzi (http_req_duration)
+Średni czas odpowiedzi: 652.44 ms
+
+Minimalny czas odpowiedzi: 582.89 ms
+
+Maksymalny czas odpowiedzi: 1.75 s
+
+Percentyle:
+
+p(90) = 668.17 ms → 90% żądań zakończyło się w czasie ≤668 ms.
+
+p(95) = 812.58 ms → 95% żądań zakończyło się w czasie ≤812 ms.
+
+📌 Wniosek: REST API działa poprawnie, ale średni czas odpowiedzi ~650 ms wskazuje na wolniejsze działanie w porównaniu z gRPC.
+
+2️⃣ Liczba żądań (http_reqs)
+Łącznie: 92 żądania w czasie 30s
+
+Przepustowość: ~3 żądania na sekundę
+
+Brak błędów (http_req_failed = 0%) → Wszystkie żądania zakończyły się sukcesem.
+
+📌 Wniosek: Serwer REST API obsłużył wszystkie zapytania poprawnie, ale wydajność jest znacznie niższa niż w gRPC.
+
+3️⃣ Sieć (data_received & data_sent)
+Odebrano: 883 MB, czyli 29 MB/s
+
+Wysłano: 7.5 kB, czyli 251 B/s
+
+📌 Wniosek: REST API przetwarza dużo więcej danych niż gRPC, co może być efektem używania bardziej rozbudowanych odpowiedzi w formacie JSON.
+
+⚖️ Porównanie wyników REST API vs gRPC
+Metryka	REST API	gRPC	Różnica
+Średni czas odpowiedzi	652.44 ms	0.221 ms	gRPC ~3000x szybsze 🔥
+Maksymalny czas odpowiedzi	1.75 s	4 ms	REST API wolniejsze
+Żądania na sekundę	3.06/s	243/s	gRPC obsługuje ~80x więcej żądań
+Percentyl 90%	668 ms	1 ms	gRPC bardziej stabilne
+Przepustowość	29 MB/s	10-12 kB/s	REST API wymaga więcej transferu
+Błędy	0%	0%	Obie technologie działają poprawnie
+📌 Kluczowe różnice:
+
+gRPC jest zdecydowanie szybsze niż REST API – mniejsze opóźnienia dzięki komunikacji binarnej.
+
+gRPC obsługuje więcej żądań na sekundę, co jest idealne dla mikroserwisów i systemów o wysokiej wydajności.
+
+REST API wymaga większej ilości danych – to wynika z użycia formatu JSON, który jest bardziej rozbudowany niż Protocol Buffers w gRPC.
+
+🚀 Którą technologię wybrać?
+✅ gRPC – jeśli zależy Ci na wydajności, niskiem opóźnieniu i dużej przepustowości. ✅ REST API – jeśli Twój system wymaga większej elastyczności, kompatybilności i łatwiejszej integracji.
+
+Czy chcesz przetestować jeszcze większe obciążenie dla REST API lub gRPC? 🎯🚀 Możemy zoptymalizować testy!

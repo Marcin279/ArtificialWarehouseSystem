@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+package pl.bielamarcin.productsservice.grpc;
+
+option java_multiple_files = false;
+option java_package = "pl.bielamarcin.productsservice.grpc";
+option java_outer_classname = "ProductServiceProto";
+
+import "google/protobuf/empty.proto";
+
+service ProductService {
+  rpc getAllProducts(google.protobuf.Empty) returns (ProductList);
+  rpc getProductById(ProductId) returns (Product);
+  rpc createProduct(CreateProductRequest) returns (Product);
+  rpc deleteProduct(ProductId) returns (google.protobuf.Empty);
+}
+
+message ProductId {
+  string id = 1;
+}
+
+message Product {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  double price = 4;
+  int32 quantity = 5;
+  string category = 6;
+}
+
+message ProductList {
+  repeated Product products = 1;
+}
+
+message CreateProductRequest {
+  string name = 1;
+  string description = 2;
+  double price = 3;
+  int32 quantity = 4;
+  string category = 5;
+}

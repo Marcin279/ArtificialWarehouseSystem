@@ -1,0 +1,11 @@
+@startuml
+left to right direction
+actor Użytkownik
+actor InnySerwis
+
+rectangle "Auth Service" {
+    Użytkownik --> (Rejestracja)
+    Użytkownik --> (Logowanie)
+    InnySerwis --> (Weryfikuj token JWT)
+}
+@enduml

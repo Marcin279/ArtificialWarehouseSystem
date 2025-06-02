@@ -1,6 +1,12 @@
 server:
   port: 8081
 
+grpc:
+  server:
+    port: 9095
+    max-inbound-message-size: 20971520  # 20MB
+    max-outbound-message-size: 20971520  # 20M
+
 spring:
   application:
     name: products-service
@@ -11,7 +17,7 @@ spring:
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     show-sql: true
     properties:
       hibernate:

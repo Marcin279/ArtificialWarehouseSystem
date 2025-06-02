@@ -1,0 +1,50 @@
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+  - job_name: 'orders-service'
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: [ 'orders-service:8082' ]
+
+  - job_name: 'products-service'
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: [ 'products-service:8081' ]
+
+  - job_name: 'shipping-service'
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: [ 'shipping-service:8083' ]
+
+  - job_name: 'warehouse-service'
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: [ 'warehouse-service:8084' ]
+
+  - job_name: 'analytics-service'
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: [ 'analytics-service:8086' ]
+
+  - job_name: 'gateway'
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: [ 'gateway:8080' ]
+
+  - job_name: 'postgres_exporter_products-db'
+    static_configs:
+      - targets: [ 'postgres_exporter_products-db:9187' ]
+
+  - job_name: 'postgres_exporter_orders-db'
+    static_configs:
+      - targets: [ 'postgres_exporter_orders-db:9187' ]
+
+  - job_name: 'postgres_exporter_shipping-db'
+    static_configs:
+      - targets: [ 'postgres_exporter_shipping-db:9187' ]
+
+  - job_name: 'postgres_exporter_warehouse-db'
+    static_configs:
+      - targets: [ 'postgres_exporter_warehouse-db:9187' ]
+

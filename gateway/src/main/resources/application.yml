@@ -30,6 +30,43 @@ spring:
             - AddRequestHeader=X-Custom-Header, MyHeaderValue
             - RemoveResponseHeader=Cookie
             - RemoveResponseHeader=Set-Cookie
+        # Metrics
+        - id: orders-service-metrics
+          uri: http://orders-service:8082
+          predicates:
+            - Path=/metrics/orders
+          filters:
+            - SetPath=/actuator/prometheus
+        - id: products-service-metrics
+          uri: http://products-service:8081
+          predicates:
+            - Path=/metrics/products
+          filters:
+            - SetPath=/actuator/prometheus
+        - id: shipping-service-metrics
+          uri: http://shipping-service:8083
+          predicates:
+            - Path=/metrics/shipping
+          filters:
+            - SetPath=/actuator/prometheus
+        - id: warehouse-service-metrics
+          uri: http://warehouse-service:8084
+          predicates:
+            - Path=/metrics/warehouse
+          filters:
+            - SetPath=/actuator/prometheus
+        - id: auth-service-metrics
+          uri: http://auth-service:8085
+          predicates:
+            - Path=/metrics/auth
+          filters:
+            - SetPath=/actuator/prometheus
+        - id: analytics-service-metrics
+          uri: http://analytics-service:8086
+          predicates:
+            - Path=/metrics/analytics
+          filters:
+            - SetPath=/actuator/prometheus
       global-cors:
         cors-configurations:
           '[/**]':
