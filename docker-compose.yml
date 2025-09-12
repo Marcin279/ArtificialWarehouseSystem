@@ -137,6 +137,7 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-shipping:5432/shipping_db
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       # Dodaj konfigurację poziomu logowania
       LOGGING_LEVEL_ROOT: WARN
       LOGGING_LEVEL_PL_BIELAMARCIN_SHIPPINGSERVICE: INFO
@@ -145,6 +146,7 @@ services:
       SPRING_KAFKA_CONSUMER_FETCH_MAX_WAIT: 300
     depends_on:
       - postgres-shipping
+      - kafka
     networks:
       - microservices-net
     deploy:
@@ -305,7 +307,7 @@ services:
       - microservices-net
 
   kafka:
-    image: confluentinc/cp-kafka:latest
+    image: confluentinc/cp-kafka:7.4.0
     container_name: kafka
     ports:
       - "9092:9092"

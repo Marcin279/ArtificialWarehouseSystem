@@ -15,7 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.bielamarcin.productsservice.dto.ProductReqDTO;
 import pl.bielamarcin.productsservice.dto.ProductRespDTO;
-import pl.bielamarcin.productsservice.exception.GlobalExceptionHandler;
+import pl.bielamarcin.productsservice.exception.ProductNotFoundException;
 import pl.bielamarcin.productsservice.service.ProductService;
 
 import java.util.List;
@@ -52,7 +52,7 @@ public class ProductController {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved the product",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductRespDTO.class))),
             @ApiResponse(responseCode = "404", description = "Product not found",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = GlobalExceptionHandler.ErrorResponse.class)))
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductNotFoundException.class)))
     })
     public ResponseEntity<ProductRespDTO> getProductById(
             @Parameter(description = "Product ID", required = true) @PathVariable UUID id) {
@@ -68,7 +68,7 @@ public class ProductController {
             @ApiResponse(responseCode = "201", description = "Product created successfully",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductRespDTO.class))),
             @ApiResponse(responseCode = "400", description = "Invalid input data",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = GlobalExceptionHandler.ErrorResponse.class)))
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductNotFoundException.class)))
     })
     public ResponseEntity<ProductRespDTO> createProduct(
             @Parameter(description = "Product data", required = true) @Valid @RequestBody ProductReqDTO productReqDTO) {
@@ -84,7 +84,7 @@ public class ProductController {
             @ApiResponse(responseCode = "201", description = "Products created successfully",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductRespDTO.class))),
             @ApiResponse(responseCode = "400", description = "Invalid input data",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = GlobalExceptionHandler.ErrorResponse.class)))
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductNotFoundException.class)))
     })
     public ResponseEntity<List<ProductRespDTO>> createAllProducts(
             @Parameter(description = "List of products to create", required = true) @Valid @RequestBody List<ProductReqDTO> productReqDTOS) {
@@ -100,9 +100,9 @@ public class ProductController {
             @ApiResponse(responseCode = "200", description = "Product updated successfully",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductRespDTO.class))),
             @ApiResponse(responseCode = "404", description = "Product not found",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = GlobalExceptionHandler.ErrorResponse.class))),
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductNotFoundException.class))),
             @ApiResponse(responseCode = "400", description = "Invalid input data",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = GlobalExceptionHandler.ErrorResponse.class)))
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductNotFoundException.class)))
     })
     public ResponseEntity<ProductRespDTO> updateProduct(
             @Parameter(description = "Product ID", required = true) @PathVariable UUID id,
@@ -118,7 +118,7 @@ public class ProductController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Product deleted successfully"),
             @ApiResponse(responseCode = "404", description = "Product not found",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = GlobalExceptionHandler.ErrorResponse.class)))
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductNotFoundException.class))),
     })
     public ResponseEntity<Void> deleteProduct(
             @Parameter(description = "Product ID", required = true) @PathVariable UUID id) {

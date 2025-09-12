@@ -29,3 +29,5 @@ replay_pid*
 # monitoring data
 grafana-storage/
 prometheus/data/
+
+./idea/
