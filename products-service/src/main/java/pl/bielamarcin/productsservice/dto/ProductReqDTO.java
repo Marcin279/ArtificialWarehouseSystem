@@ -5,10 +5,10 @@ import pl.bielamarcin.productsservice.model.ProductCategory;
 import java.math.BigDecimal;
 
 public record ProductReqDTO(
-    String name,
-    String description,
-    BigDecimal price,
-    Integer quantity,
-    ProductCategory category
-    ) {}
-
+        String name,
+        String description,
+        BigDecimal price,
+        Integer quantity,
+        ProductCategory category
+) {
+}
