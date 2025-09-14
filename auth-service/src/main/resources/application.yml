@@ -1,6 +1,10 @@
 server:
   port: 8085
 
+jwt:
+  private-key: classpath:private_key.pem
+  expiration: 3600000 # 1 hour in milliseconds
+
 spring:
   application:
     name: auth-service

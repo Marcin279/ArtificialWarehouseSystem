@@ -1,6 +1,9 @@
 server:
   port: 8081
 
+jwt:
+  public-key: classpath:public_key.pem
+
 grpc:
   server:
     port: 9095
