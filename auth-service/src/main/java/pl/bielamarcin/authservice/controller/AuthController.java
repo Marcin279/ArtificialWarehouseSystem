@@ -17,7 +17,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public String login(@RequestParam String username, @RequestParam String password) {
-        // 🔐 tu normalnie sprawdzasz w bazie
+        // TODO: Add db validation and add register endpoint
         if ("admin".equals(username) && "password".equals(password)) {
             return jwtUtil.generateToken(username, "ADMIN");
         }

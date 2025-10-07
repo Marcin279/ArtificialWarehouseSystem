@@ -31,3 +31,6 @@ grafana-storage/
 prometheus/data/
 
 ./idea/
+
+*copilot.data.migration*
+
