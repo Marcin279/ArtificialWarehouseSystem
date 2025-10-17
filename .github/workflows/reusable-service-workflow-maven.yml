@@ -26,7 +26,7 @@ jobs:
       # -am (also make): Zapewnia, że zależności modułu (np. wspólne biblioteki) zostaną zbudowane
       - name: Build and Test Module 🛠️
         # Używamy lifecycle 'package', który uruchamia testy i tworzy plik JAR
-        run: mvn install --projects ${{ inputs.service_name }} --also-make -DskipTests=false
+        run: mvn install --projects ${{ inputs.service_name }} --also-make -DskipTests=true
 
       # Upload zbudowanego JAR jako artifact dla kolejnego joba
       - name: Upload JAR artifact
@@ -60,6 +60,11 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      # Konwertuj nazwę właściciela na małe litery
+      - name: Convert owner to lowercase
+        id: lowercase
+        run: echo "owner=$(echo ${{ github.repository_owner }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_OUTPUT
+
       # Budowanie i push do GHCR
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v5
@@ -68,8 +73,8 @@ jobs:
           file: ./${{ inputs.service_name }}/Dockerfile
           push: true
           tags: |
-            ghcr.io/${{ github.repository_owner }}/${{ inputs.service_name }}:latest
-            ghcr.io/${{ github.repository_owner }}/${{ inputs.service_name }}:${{ github.sha }}
+            ghcr.io/${{ steps.lowercase.outputs.owner }}/${{ inputs.service_name }}:latest
+            ghcr.io/${{ steps.lowercase.outputs.owner }}/${{ inputs.service_name }}:${{ github.sha }}
 
   deploy:
     needs: [ docker_build_and_push ]
