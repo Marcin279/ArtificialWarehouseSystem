@@ -1,0 +1,123 @@
+name: CI CD Multi-Service Maven Pipeline
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+    # Filtrowanie ścieżek
+    paths:
+      - '**/src/**'
+      - '**/pom.xml'
+      - 'pom.xml'
+      - '.github/workflows/**'
+
+jobs:
+  check_changes:
+    runs-on: ubuntu-latest
+    outputs:
+      products_changed: ${{ steps.changes.outputs.products }}
+      orders_changed: ${{ steps.changes.outputs.orders }}
+      auth_changed: ${{ steps.changes.outputs.auth }}
+      shipping_changed: ${{ steps.changes.outputs.shipping }}
+      warehouse_changed: ${{ steps.changes.outputs.warehouse }}
+      analytics_changed: ${{ steps.changes.outputs.analytics }}
+      gateway_changed: ${{ steps.changes.outputs.gateway }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: changes
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            products:
+              - 'products-service/**'
+            orders:
+              - 'orders-service/**'
+            auth:
+              - 'auth-service/**'
+            shipping:
+              - 'shipping-service/**'
+            warehouse:
+              - 'warehouse-service/**'
+            analytics:
+              - 'analytics-service/**'
+            gateway:
+              - 'gateway/**'
+  
+
+  # ----------------------------------------------------
+  # 2. Pipeline dla Products Service
+  # ----------------------------------------------------
+  products_service_pipeline:
+    needs: [ check_changes ]
+    if: needs.check_changes.outputs.products_changed == 'true'
+    uses: ./.github/workflows/reusable-service-workflow-maven.yml
+    with:
+      service_name: products-service
+    secrets: inherit
+
+  # ----------------------------------------------------
+  # 3. Pipeline dla Orders Service
+  # ----------------------------------------------------
+  orders_service_pipeline:
+    needs: [ check_changes ]
+    if: needs.check_changes.outputs.orders_changed == 'true'
+    uses: ./.github/workflows/reusable-service-workflow-maven.yml
+    with:
+      service_name: orders-service
+    secrets: inherit
+
+  # ----------------------------------------------------
+  # 4. Pipeline dla Auth Service
+  # ----------------------------------------------------
+  auth_service_pipeline:
+    needs: [ check_changes ]
+    if: needs.check_changes.outputs.auth_changed == 'true'
+    uses: ./.github/workflows/reusable-service-workflow-maven.yml
+    with:
+      service_name: auth-service
+    secrets: inherit
+
+  # ----------------------------------------------------
+  # 5. Pipeline dla Warehouse Service
+  # ----------------------------------------------------
+  warehouse_service_pipeline:
+    needs: [ check_changes ]
+    if: needs.check_changes.outputs.warehouse_changed == 'true'
+    uses: ./.github/workflows/reusable-service-workflow-maven.yml
+    with:
+      service_name: warehouse-service
+    secrets: inherit
+
+  # ----------------------------------------------------
+  # 6. Pipeline dla Shipping Service
+  # ----------------------------------------------------
+  shipping_service_pipeline:
+    needs: [ check_changes ]
+    if: needs.check_changes.outputs.shipping_changed == 'true'
+    uses: ./.github/workflows/reusable-service-workflow-maven.yml
+    with:
+      service_name: shipping-service
+    secrets: inherit
+
+  # ----------------------------------------------------
+  # 7. Pipeline dla Analytics Service
+  # ----------------------------------------------------
+  analytics_service_pipeline:
+    needs: [ check_changes ]
+    if: needs.check_changes.outputs.analytics_changed == 'true'
+    uses: ./.github/workflows/reusable-service-workflow-maven.yml
+    with:
+      service_name: analytics-service
+    secrets: inherit
+
+  # ----------------------------------------------------
+  # 8. Pipeline dla Gateway
+  # ----------------------------------------------------
+  gateway_pipeline:
+    needs: [ check_changes ]
+    if: needs.check_changes.outputs.gateway_changed == 'true'
+    uses: ./.github/workflows/reusable-service-workflow-maven.yml
+    with:
+      service_name: gateway
+    secrets: inherit
