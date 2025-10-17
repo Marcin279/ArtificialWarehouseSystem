@@ -5,10 +5,14 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Collections;
 
 @Component
 public class JwtFilter extends OncePerRequestFilter {
@@ -24,14 +28,8 @@ public class JwtFilter extends OncePerRequestFilter {
                                     FilterChain filterChain) throws ServletException, IOException {
         String path = request.getRequestURI();
         String method = request.getMethod();
-
-        // Skip authentication for public endpoints
-        if (path.startsWith("/api/products") && (method.equals("GET") || method.equals("POST"))) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-
-        if (path.startsWith("/public/")) {
+        
+        if (isPublicEndpoint(path, method)) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -41,17 +39,42 @@ public class JwtFilter extends OncePerRequestFilter {
         if (header != null && header.startsWith("Bearer ")) {
             String token = header.substring(7);
             try {
-                Claims claims = jwtUtil.validateToken(token).getBody();
-                request.setAttribute("claims", claims);
+                if (jwtUtil.isTokenValid(token)) {
+                    Claims claims = jwtUtil.validateToken(token);
+                    String username = claims.getSubject();
+                    String role = claims.get("role", String.class);
+
+                    UsernamePasswordAuthenticationToken authentication =
+                            new UsernamePasswordAuthenticationToken(
+                                    username,
+                                    null,
+                                    Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + role))
+                            );
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+
+                    request.setAttribute("username", username);
+                    request.setAttribute("role", role);
+                } else {
+                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid or expired token");
+                    return;
+                }
             } catch (Exception e) {
-                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid token");
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid token: " + e.getMessage());
                 return;
             }
         } else {
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Missing token");
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Missing or invalid Authorization header");
             return;
         }
 
         filterChain.doFilter(request, response);
+    }
+
+    private boolean isPublicEndpoint(String path, String method) {
+        if (!("GET".equalsIgnoreCase(method) && path.startsWith("/api/products"))) {
+            return path.startsWith("/public/");
+        }
+
+        return true;
     }
 }

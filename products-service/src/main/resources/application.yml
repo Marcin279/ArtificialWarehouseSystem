@@ -2,7 +2,16 @@ server:
   port: 8081
 
 jwt:
-  public-key: classpath:public_key.pem
+  public-key: |
+    -----BEGIN PUBLIC KEY-----
+    MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAz5mQRHpbzd5k1opDpf64
+    UPI3YrSAhDgZvOW6pYhPFqyiRCUJWxg2iJ0j4D2yNEWYnqtU0POso7tQI9YTrA2Z
+    cLyJkZ8MIIQ01X6MpsVhAvskA18l0UBsLqmRrqzl9zrv8TCklcVWO/L3qI/yVu+3
+    V2ukXIZNc4oJIKTz5yjSTRBx5JCH3Fl0ZRpE/ASgbCJebQmQ8YIixVuBGDRbLele
+    dDj+IyshJOk3F/7bVu/u1YNCbXRGESY0YIUZ2rECyB+3Ic39OPCN53Hax+Ll0Bfd
+    ZUxg90Su4S3npMaNk3VCr6BJzHLWRUaJ52XXaP5xjmkggTnqJ0sAplPU3hbxykRV
+    kwIDAQAB
+    -----END PUBLIC KEY-----
 
 grpc:
   server:
